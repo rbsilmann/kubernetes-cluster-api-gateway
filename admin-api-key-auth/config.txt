@@ -1,9 +1,6 @@
 # Etapa inicial: criar serviço e rota para API Admin.
 # Para todas as etapas anote o id do objeto criado.
 
-curl -X POST http://svc-kong-admin:8001/services --data name=admin-api --data host=127.0.0.1 --data port=8001
-curl -X POST http://svc-kong-admin:8001/services/admin-api/routes --data paths[]=/admin-api
-
 # Criar o consumer e sua key.
 curl -X POST http://localhost/admin-api/consumers --data username=admin-api-consumer
 curl -X POST http://localhost/admin-api/consumers/admin-api-consumer/key-auth --data consumer.id=[id do consumer]
