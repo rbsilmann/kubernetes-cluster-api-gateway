@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-prepare-kong
+spec:
+  ttlSecondsAfterFinished: 100
+  template: 
+    spec:
+      containers:
+      - name: prepare-kong
+        image: kong:3.0.0-ubuntu
+        envFrom:
+          - configMapRef:
+              name: config-kong
+        env:
+          - name: KONG_PG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-kong
+                key: password
+        command: ["kong", "migrations", "bootstrap"]
+      restartPolicy: Never

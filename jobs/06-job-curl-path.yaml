@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-prepare-admin-api-path
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: prepare-admin-api
+        image: ibmcom/curl:4.0.0
+        command:
+        - "curl"
+        - "-X"
+        - "POST"
+        - "http://svc-kong-admin:8001/services/admin-api/routes"
+        - "--data"
+        - "paths[]=/admin-api"
+      restartPolicy: Never

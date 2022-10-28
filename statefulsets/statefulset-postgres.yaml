@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: svc-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:12.12-alpine
+        envFrom:
+          - configMapRef:
+              name: config-postgres
+        env:
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-postgres
+                key: password
+        ports:
+        - containerPort: 5432
+          name: default
+        volumeMounts:
+        - name: pgsql-data
+          mountPath: /pgsql
+  volumeClaimTemplates:
+  - metadata:
+      name: pgsql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi

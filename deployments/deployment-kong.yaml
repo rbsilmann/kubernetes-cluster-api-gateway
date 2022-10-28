@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong-proxy
+spec:
+  selector:
+    matchLabels:
+      app: kong-proxy
+  template:
+    metadata:
+      labels:
+        app: kong-proxy
+    spec:
+      containers:
+      - name: kong-proxy
+        image: kong:3.0.0-ubuntu
+        envFrom:
+          - configMapRef:
+              name: config-kong
+        env:
+          - name: KONG_PG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-kong
+                key: password
+        resources: {}
+        ports:
+        - containerPort: 8000
+          name: proxy
+        - containerPort: 8443
+          name: proxy-ssl
+        - containerPort: 8001
+          name: admin-api
+        - containerPort: 8444
+          name: admin-api-ssl
